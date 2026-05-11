@@ -16,6 +16,9 @@ jobs:
 
     env:
       PYTEST_DISABLE_PLUGIN_AUTOLOAD: "1"
+      WEATHER_API_KEY: "test_weather_api_key"
+      DATABASE_URL: "sqlite:///./test.db"
+      API_KEY: "test_api_key"
 
     steps:
       - name: Checkout repository
