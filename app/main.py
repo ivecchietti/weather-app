@@ -1,11 +1,16 @@
 from fastapi import FastAPI
 
+from app.api.routes import weather
+from app.core.config import settings
+
 app = FastAPI(
-    title="Weather App Backend",
+    title=settings.app_name,
     version="1.0.0",
 )
+
+app.include_router(weather.router)
 
 
 @app.get("/")
 def root():
-    return {"message": "Weather App Backend is running"}
+    return {"message": f"{settings.app_name} is running"}
