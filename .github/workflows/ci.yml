@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - develop
+      - feature/**
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      PYTEST_DISABLE_PLUGIN_AUTOLOAD: "1"
+      WEATHER_API_KEY: "test_weather_api_key"
+      DATABASE_URL: "sqlite:///./test.db"
+      API_KEY: "test_api_key"
+      SECRET_KEY: "test_secret_key_for_ci"
+      ALGORITHM: "HS256"
+      ACCESS_TOKEN_EXPIRE_MINUTES: "30"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run Ruff
+        run: |
+          ruff check .
+
+      - name: Run tests
+        run: |
+          python -m pytest
