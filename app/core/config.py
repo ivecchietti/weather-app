@@ -6,7 +6,9 @@ class Settings(BaseSettings):
     weather_api_key: str
     database_url: str
     api_key: str
-
+    secret_key: str
+    algorithm: str
+    access_token_expire_minutes: int
     model_config = SettingsConfigDict(env_file=".env")
 
 

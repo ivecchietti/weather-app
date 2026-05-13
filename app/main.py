@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from app.api.routes import weather
+from app.api.routes import auth, users, weather
 from app.core.config import settings
 
 app = FastAPI(
@@ -9,6 +9,8 @@ app = FastAPI(
 )
 
 app.include_router(weather.router)
+app.include_router(auth.router)
+app.include_router(users.router)
 
 
 @app.get("/")
