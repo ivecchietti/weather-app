@@ -1,12 +1,7 @@
 from uuid import uuid4
 
-from fastapi.testclient import TestClient
 
-from app.main import app
-
-client = TestClient(app)
-
-def test_register_user():
+def test_register_user(client):
     unique_id = uuid4().hex
 
     response = client.post(
@@ -26,7 +21,7 @@ def test_register_user():
     assert data["username"] == f"testuser_{unique_id}"
 
 
-def test_login_user():
+def test_login_user(client):
     client.post(
         "/auth/register",
         json={
@@ -52,7 +47,7 @@ def test_login_user():
     assert data["token_type"] == "bearer"
 
 
-def test_login_invalid_credentials():
+def test_login_invalid_credentials(client):
     response = client.post(
         "/auth/login",
         json={
@@ -67,7 +62,8 @@ def test_login_invalid_credentials():
         "detail": "Invalid email or password"
     }
 
-def test_register_duplicate_user():
+
+def test_register_duplicate_user(client):
     user_data = {
         "email": "duplicate@test.com",
         "username": "duplicate",
@@ -83,7 +79,7 @@ def test_register_duplicate_user():
     }
 
 
-def test_get_current_user_with_valid_token():
+def test_get_current_user_with_valid_token(client):
     user_data = {
         "email": "me@test.com",
         "username": "meuser",

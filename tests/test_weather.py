@@ -1,11 +1,4 @@
-from fastapi.testclient import TestClient
-
-from app.main import app
-
-client = TestClient(app)
-
-
-def test_current_weather_endpoint(monkeypatch):
+def test_current_weather_endpoint(client, monkeypatch):
     def mock_fetch_current_weather(location: str):
         return {
             "name": "Buenos Aires",
