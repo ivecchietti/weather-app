@@ -33,8 +33,8 @@ def test_login_user(client):
 
     response = client.post(
         "/auth/login",
-        json={
-            "email": "testuser2@test.com",
+        data={
+            "username": "testuser2@test.com",
             "password": "password123",
         },
     )
@@ -50,8 +50,8 @@ def test_login_user(client):
 def test_login_invalid_credentials(client):
     response = client.post(
         "/auth/login",
-        json={
-            "email": "fake@test.com",
+        data={
+            "username": "fake@test.com",
             "password": "wrongpassword",
         },
     )
@@ -90,8 +90,8 @@ def test_get_current_user_with_valid_token(client):
 
     login_response = client.post(
         "/auth/login",
-        json={
-            "email": user_data["email"],
+        data={
+            "username": user_data["email"],
             "password": user_data["password"],
         },
     )

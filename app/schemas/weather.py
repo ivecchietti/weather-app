@@ -7,6 +7,11 @@ class WeatherSearchRequest(BaseModel):
     location: str
 
 
+class WeatherRecordUpdate(BaseModel):
+    location_query: str | None = None
+    resolved_location: str | None = None
+
+
 class WeatherRecordResponse(BaseModel):
     id: int
     user_id: int | None
