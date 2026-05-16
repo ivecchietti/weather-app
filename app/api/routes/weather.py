@@ -9,6 +9,7 @@ from app.models.weather_record import WeatherRecord
 from app.schemas.search_history import SearchHistoryResponse
 from app.schemas.weather import (
     WeatherRecordResponse,
+    WeatherRecordUpdate,
     WeatherSearchRequest,
 )
 from app.services.weather_service import fetch_current_weather
@@ -80,3 +81,120 @@ def get_search_history(
     )
 
     return history
+
+
+@router.get(
+    "/records",
+    response_model=list[WeatherRecordResponse],
+)
+def get_weather_records(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    records = (
+        db.query(WeatherRecord)
+        .filter(WeatherRecord.user_id == current_user.id)
+        .order_by(WeatherRecord.created_at.desc())
+        .all()
+    )
+
+    return records
+
+
+@router.get(
+    "/{weather_id}",
+    response_model=WeatherRecordResponse,
+)
+def get_weather_record(
+    weather_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    weather_record = (
+        db.query(WeatherRecord)
+        .filter(
+            WeatherRecord.id == weather_id,
+            WeatherRecord.user_id == current_user.id,
+        )
+        .first()
+    )
+
+    if not weather_record:
+        raise HTTPException(
+            status_code=404,
+            detail="Weather record not found",
+        )
+
+    return weather_record
+
+
+@router.put(
+    "/{weather_id}",
+    response_model=WeatherRecordResponse,
+)
+def update_weather_record(
+    weather_id: int,
+    request: WeatherRecordUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    weather_record = (
+        db.query(WeatherRecord)
+        .filter(
+            WeatherRecord.id == weather_id,
+            WeatherRecord.user_id == current_user.id,
+        )
+        .first()
+    )
+
+    if not weather_record:
+        raise HTTPException(
+            status_code=404,
+            detail="Weather record not found",
+        )
+
+    if request.location_query is not None:
+        weather_record.location_query = (
+            request.location_query
+        )
+
+    if request.resolved_location is not None:
+        weather_record.resolved_location = (
+            request.resolved_location
+        )
+
+    db.commit()
+    db.refresh(weather_record)
+
+    return weather_record
+
+
+@router.delete(
+    "/{weather_id}",
+)
+def delete_weather_record(
+    weather_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    weather_record = (
+        db.query(WeatherRecord)
+        .filter(
+            WeatherRecord.id == weather_id,
+            WeatherRecord.user_id == current_user.id,
+        )
+        .first()
+    )
+
+    if not weather_record:
+        raise HTTPException(
+            status_code=404,
+            detail="Weather record not found",
+        )
+
+    db.delete(weather_record)
+    db.commit()
+
+    return {
+        "message": "Weather record deleted successfully"
+    }
