@@ -4,28 +4,24 @@
 
 Modern full-stack weather application built with FastAPI and Next.js.
 
-The project includes:
-- JWT authentication
-- PostgreSQL persistence
-- SQLAlchemy ORM
-- Alembic migrations
-- Dockerized local development
-- Automated testing
-- CI with GitHub Actions
-- Architecture Decision Records (ADRs)
+This project was developed as part of the PM Accelerator AI Engineer Internship Technical Assessment.
 
 ---
 
 ## Overview
 
 The application allows users to:
-- Create accounts and authenticate securely
-- Search weather information for different locations
-- Persist user-related data
-- Interact with a modern REST API backend
-- Run the project locally using Docker
 
-The project is designed following professional backend engineering practices with modular architecture, environment-based configuration, migrations, automated testing, and CI pipelines.
+- Register and authenticate securely using JWT
+- Retrieve real-time weather information
+- Retrieve 5-day weather forecasts
+- Store weather searches in a PostgreSQL database
+- Perform full CRUD operations on weather records
+- Export weather records as CSV files
+- Interact with a REST API documented with Swagger/OpenAPI
+- Run the entire stack using Docker Compose
+
+The project follows professional backend engineering practices including modular architecture, database migrations, automated testing, CI/CD pipelines, and environment-based configuration.
 
 ---
 
@@ -41,15 +37,21 @@ The project is designed following professional backend engineering practices wit
 - Alembic database migrations
 - Dependency injection pattern
 - Environment-based configuration with `pydantic-settings`
-- Automated tests with `pytest`
+- Automated testing with `pytest`
 - Code quality checks with `ruff`
+- Current weather endpoint
+- 5-day weather forecast endpoint
+- Search history persistence
+- CSV export functionality
+- Swagger/OpenAPI documentation
+- Health check endpoint
 
 ### Frontend
 
-- Next.js frontend
+- Next.js frontend structure
 - TypeScript support
-- Modern React architecture
-- API integration with backend services
+- React-based architecture
+- Backend API integration ready
 
 ### DevOps
 
@@ -87,11 +89,45 @@ The project is designed following professional backend engineering practices wit
 - Docker Compose
 - GitHub Actions
 
+### External APIs
+
+- OpenWeather API
+
+---
+
+## API Endpoints
+
+### Authentication
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/auth/register` | Register a new user |
+| POST | `/auth/login` | Login and receive JWT token |
+
+### Users
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/users/me` | Retrieve authenticated user information |
+
+### Weather
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/weather/current` | Retrieve current weather |
+| POST | `/weather/forecast` | Retrieve 5-day weather forecast |
+| GET | `/weather/history` | Retrieve recent search history |
+| GET | `/weather/records` | Retrieve stored weather records |
+| GET | `/weather/{weather_id}` | Retrieve a specific weather record |
+| PUT | `/weather/{weather_id}` | Update a weather record |
+| DELETE | `/weather/{weather_id}` | Delete a weather record |
+| GET | `/weather/export/csv` | Export weather records as CSV |
+
 ---
 
 ## Project Structure
 
-
+```text
 .
 ├── alembic/               # Database migrations
 ├── app/
@@ -100,16 +136,19 @@ The project is designed following professional backend engineering practices wit
 │   ├── db/                # Database setup
 │   ├── models/            # SQLAlchemy ORM models
 │   ├── schemas/           # Pydantic schemas
+│   ├── services/          # External API services
 │   └── main.py            # FastAPI application
 ├── docs/
 │   └── adr/               # Architecture Decision Records
 ├── tests/                 # Automated tests
+├── screenshots/           # README screenshots
 ├── .github/
 │   └── workflows/         # GitHub Actions CI
+├── Dockerfile
 ├── docker-compose.yml
 ├── requirements.txt
 └── README.md
-
+```
 
 ---
 
@@ -117,12 +156,36 @@ The project is designed following professional backend engineering practices wit
 
 Create a `.env` file in the project root:
 
-
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/weather_db
-WEATHER_API_KEY=your_api_key
+```env
+WEATHER_API_KEY=your_openweather_api_key
+DATABASE_URL=postgresql://weather_user:weather_password@db:5432/weather_db
+API_KEY=your_api_key
 SECRET_KEY=your_secret_key
 ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
+ACCESS_TOKEN_EXPIRE_MINUTES=60
+```
+
+---
+
+## Run with Docker
+
+### Build and start containers
+
+```bash
+docker compose up --build
+```
+
+### Run database migrations
+
+```bash
+docker compose exec api alembic upgrade head
+```
+
+### Stop containers
+
+```bash
+docker compose down
+```
 
 ---
 
@@ -134,27 +197,33 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 pip install -r requirements.txt
 ```
 
-### Run PostgreSQL with Docker
-
-```bash
-docker compose up -d
-```
-
-### Run database migrations
-
-```bash
-alembic upgrade head
-```
-
 ### Start backend server
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-Swagger documentation:
-http://localhost:8000/docs
+---
 
+## Application URLs
+
+### Backend API
+
+```text
+http://localhost:8000
+```
+
+### Swagger Documentation
+
+```text
+http://localhost:8000/docs
+```
+
+### Health Check
+
+```text
+http://localhost:8000/health
+```
 
 ---
 
@@ -184,6 +253,7 @@ The project includes a GitHub Actions CI pipeline that automatically:
 - Verifies environment configuration
 
 The pipeline runs on:
+
 - pushes to `develop`
 - pushes to `feature/**`
 - pull requests to `main` and `develop`
@@ -199,6 +269,7 @@ docs/adr/
 ```
 
 Current ADRs include:
+
 - FastAPI framework selection
 - Pydantic settings configuration
 - PostgreSQL database choice
@@ -206,25 +277,23 @@ Current ADRs include:
 
 ---
 
-## Current Status
+## Screenshots
 
-### Implemented
+### Swagger Documentation
 
-- Backend architecture
-- PostgreSQL integration
-- Authentication base
-- Database migrations
-- CI pipeline
-- Automated testing
-- ADR documentation
+![Swagger](./screenshots/swagger.png)
 
-### In Progress
+### 5-Day Forecast Endpoint
 
-- Login flow
-- Weather API integration
-- Search history persistence
-- Frontend integration
-- Weather caching system
+![Forecast](./screenshots/forecast.png)
+
+### CSV Export Functionality
+
+![CSV Export](./screenshots/csv-export.png)
+
+### GitHub Actions CI Pipeline
+
+![CI Pipeline](./screenshots/github-actions.png)
 
 ---
 
@@ -234,6 +303,15 @@ Current ADRs include:
 - Rate limiting
 - Background tasks
 - Weather analytics
+- Frontend dashboard improvements
 - User preferences
 - Deployment infrastructure
 - Monitoring and observability
+
+---
+
+## About
+
+Developed by Ivo Vecchietti as part of the PM Accelerator AI Engineer Internship Technical Assessment.
+
+This project demonstrates backend engineering concepts including REST API development, authentication, database persistence, external API integration, CI/CD pipelines, Docker-based environments, automated testing, and software architecture best practices.
