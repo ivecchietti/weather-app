@@ -19,7 +19,7 @@ The application allows users to:
 - Perform full CRUD operations on weather records
 - Export weather records as CSV files
 - Interact with a REST API documented with Swagger/OpenAPI
-- Run the project locally using Docker
+- Run the entire stack using Docker Compose
 
 The project follows professional backend engineering practices including modular architecture, database migrations, automated testing, CI/CD pipelines, and environment-based configuration.
 
@@ -44,6 +44,7 @@ The project follows professional backend engineering practices including modular
 - Search history persistence
 - CSV export functionality
 - Swagger/OpenAPI documentation
+- Health check endpoint
 
 ### Frontend
 
@@ -140,9 +141,10 @@ The project follows professional backend engineering practices including modular
 ├── docs/
 │   └── adr/               # Architecture Decision Records
 ├── tests/                 # Automated tests
+├── screenshots/           # README screenshots
 ├── .github/
 │   └── workflows/         # GitHub Actions CI
-├── screenshots/           # README screenshots
+├── Dockerfile
 ├── docker-compose.yml
 ├── requirements.txt
 └── README.md
@@ -155,11 +157,34 @@ The project follows professional backend engineering practices including modular
 Create a `.env` file in the project root:
 
 ```env
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/weather_db
 WEATHER_API_KEY=your_openweather_api_key
+DATABASE_URL=postgresql://weather_user:weather_password@db:5432/weather_db
+API_KEY=your_api_key
 SECRET_KEY=your_secret_key
 ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
+ACCESS_TOKEN_EXPIRE_MINUTES=60
+```
+
+---
+
+## Run with Docker
+
+### Build and start containers
+
+```bash
+docker compose up --build
+```
+
+### Run database migrations
+
+```bash
+docker compose exec api alembic upgrade head
+```
+
+### Stop containers
+
+```bash
+docker compose down
 ```
 
 ---
@@ -172,28 +197,32 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 pip install -r requirements.txt
 ```
 
-### Run PostgreSQL with Docker
-
-```bash
-docker compose up -d
-```
-
-### Run database migrations
-
-```bash
-alembic upgrade head
-```
-
 ### Start backend server
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-Swagger documentation:
+---
+
+## Application URLs
+
+### Backend API
+
+```text
+http://localhost:8000
+```
+
+### Swagger Documentation
 
 ```text
 http://localhost:8000/docs
+```
+
+### Health Check
+
+```text
+http://localhost:8000/health
 ```
 
 ---
@@ -285,4 +314,4 @@ Current ADRs include:
 
 Developed by Ivo Vecchietti as part of the PM Accelerator AI Engineer Internship Technical Assessment.
 
-This project demonstrates backend engineering concepts including REST API development, authentication, database persistence, external API integration, CI/CD pipelines, automated testing, and software architecture best practices.
+This project demonstrates backend engineering concepts including REST API development, authentication, database persistence, external API integration, CI/CD pipelines, Docker-based environments, automated testing, and software architecture best practices.
