@@ -12,11 +12,16 @@ from app.models.user import User
 from app.models.weather_record import WeatherRecord
 from app.schemas.search_history import SearchHistoryResponse
 from app.schemas.weather import (
+    ForecastItem,
+    ForecastResponse,
     WeatherRecordResponse,
     WeatherRecordUpdate,
     WeatherSearchRequest,
 )
-from app.services.weather_service import fetch_current_weather
+from app.services.weather_service import (
+    fetch_current_weather,
+    fetch_weather_forecast,
+)
 
 router = APIRouter(prefix="/weather", tags=["weather"])
 
@@ -64,6 +69,42 @@ def get_current_weather(
     db.commit()
 
     return weather_record
+
+
+@router.post(
+    "/forecast",
+    response_model=ForecastResponse,
+)
+def get_weather_forecast(
+    request: WeatherSearchRequest,
+):
+    try:
+        forecast_data = fetch_weather_forecast(
+            request.location
+        )
+    except Exception:
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to fetch forecast data",
+        )
+
+    daily_forecasts = []
+
+    for item in forecast_data["list"]:
+        if "12:00:00" in item["dt_txt"]:
+            daily_forecasts.append(
+                ForecastItem(
+                    date=item["dt_txt"].split(" ")[0],
+                    temperature=item["main"]["temp"],
+                    humidity=item["main"]["humidity"],
+                    description=item["weather"][0]["description"],
+                )
+            )
+
+    return ForecastResponse(
+        location=forecast_data["city"]["name"],
+        forecast=daily_forecasts[:5],
+    )
 
 
 @router.get(
@@ -155,7 +196,9 @@ def export_weather_records_csv(
         iter([output.getvalue()]),
         media_type="text/csv",
         headers={
-            "Content-Disposition": "attachment; filename=weather_records.csv"
+            "Content-Disposition": (
+                "attachment; filename=weather_records.csv"
+            )
         },
     )
 
@@ -250,4 +293,6 @@ def delete_weather_record(
     db.delete(weather_record)
     db.commit()
 
-    return {"message": "Weather record deleted successfully"}
+    return {
+        "message": "Weather record deleted successfully"
+    }

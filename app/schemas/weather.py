@@ -28,3 +28,14 @@ class WeatherRecordResponse(BaseModel):
     model_config = {
         "from_attributes": True
     }
+
+class ForecastItem(BaseModel):
+    date: str
+    temperature: float
+    humidity: int
+    description: str
+
+
+class ForecastResponse(BaseModel):
+    location: str
+    forecast: list[ForecastItem]
