@@ -310,8 +310,45 @@ Current ADRs include:
 
 ---
 
+---
+
+## PM Accelerator
+
+Product Manager Accelerator (PMA) is a professional training and career development organization focused on helping Product Management professionals grow throughout every stage of their careers.
+
+Their programs support students, aspiring Product Managers, and experienced product leaders through mentorship, AI Product Management education, interview preparation, leadership training, and hands-on project experience.
+
+PM Accelerator provides services such as:
+
+- PMA Pro
+- AI PM Bootcamp
+- PMA Power Skills
+- PMA Leader
+- 1:1 Resume Review
+- Free Product Management training resources
+
+The organization focuses on building strong product management, leadership, and AI-driven problem-solving skills through practical learning experiences and real-world applications.
+
+Official Website:
+https://www.pmaccelerator.io/
+
+LinkedIn:
+https://www.linkedin.com/company/product-manager-accelerator/
+
+---
+
 ## About
 
-Developed by Ivo Vecchietti as part of the PM Accelerator AI Engineer Internship Technical Assessment.
+Developed by **Ivo Vecchietti** as part of the PM Accelerator AI Engineer Internship Technical Assessment.
 
-This project demonstrates backend engineering concepts including REST API development, authentication, database persistence, external API integration, CI/CD pipelines, Docker-based environments, automated testing, and software architecture best practices.
+This project demonstrates backend engineering concepts including:
+
+- REST API development
+- Authentication and authorization
+- Database persistence
+- CRUD operations
+- External API integration
+- CI/CD pipelines
+- Docker-based environments
+- Automated testing
+- Software architecture best practices
