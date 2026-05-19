@@ -46,12 +46,7 @@ The project follows professional backend engineering practices including modular
 - Swagger/OpenAPI documentation
 - Health check endpoint
 
-### Frontend
 
-- Next.js frontend structure
-- TypeScript support
-- React-based architecture
-- Backend API integration ready
 
 ### DevOps
 
@@ -76,12 +71,7 @@ The project follows professional backend engineering practices including modular
 - Pytest
 - Ruff
 
-### Frontend
 
-- Next.js
-- React
-- TypeScript
-- TailwindCSS
 
 ### DevOps
 
@@ -134,6 +124,7 @@ The project follows professional backend engineering practices including modular
 │   ├── api/               # API routes and dependencies
 │   ├── core/              # Configuration and security
 │   ├── db/                # Database setup
+│   ├── exceptions/        # Handlers
 │   ├── models/            # SQLAlchemy ORM models
 │   ├── schemas/           # Pydantic schemas
 │   ├── services/          # External API services
